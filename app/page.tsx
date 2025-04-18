@@ -27,7 +27,7 @@ export default function Home() {
       { id: 5, title: "Dress", imageUrl: "/images/Dress.jpg" },
       { id: 6, title: "Skirt", imageUrl: "/images/Skirt.jpg" },
       { id: 7, title: "Sweater", imageUrl: "/images/Sweater.jpg" },
-      { id: 8, title: "Shoes", imageUrl: "/images/Shoes.jpg" },
+      { id: 8, title: "Shoes", imageUrl: "/images/shoes.jpg" },
     ],
   };
   
