@@ -36,7 +36,7 @@ export default function Product() {
       title: "Chunky Sneakers",
       category: "Footwear",
       price: 89.99,
-    imageUrl:"/images/Shoes.jpg"
+    imageUrl:"/images/shoes.jpg"
     },
     {
       title: "Beige Wide-Leg Trousers",
