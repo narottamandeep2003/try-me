@@ -2,6 +2,7 @@
 import HomeCategories from "@/components/HomeCategories";
 import LandingPage from "@/components/LandingPage";
 import Product from "@/components/Product";
+import UserComp from "@/components/UserComp";
 import { HomeCategoriesType } from "@/types/HomePage";
 
 
@@ -9,7 +10,7 @@ export default function Home() {
   
   
   const AudienceCategories: HomeCategoriesType = {
-    title: "AudienceCategories",
+    title: "Audience Categories",
     categories: [
       { id: 1, title: "Kids", imageUrl: "/images/Kids.jpg" },
       { id: 2, title: "Man", imageUrl: "/images/Man.jpg" },
@@ -34,6 +35,7 @@ export default function Home() {
   
   return (
     <>
+    <UserComp></UserComp>
     <LandingPage></LandingPage>
     <HomeCategories data={AudienceCategories}></HomeCategories>
     <HomeCategories data={Categories}></HomeCategories>
