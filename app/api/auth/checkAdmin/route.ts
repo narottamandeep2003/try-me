@@ -20,7 +20,8 @@ const db = getFirestore();
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get('__session')?.value;
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.split('Bearer ')[1];
 
     if (!token) {
       return NextResponse.json({ message: 'Unauthorized - no token' }, { status: 401 });
