@@ -1,80 +1,79 @@
-import Image from "next/image";
+"use client";
 
-export default function Product() {
-  const products = [
-    {
-      title: "Classic White T-Shirt",
-      category: "Tops",
-      price: 19.99,
-      imageUrl:"/images/CropTop.jpg"
-    },
-    {
-      title: "High-Waisted Denim Jeans",
-      category: "Bottoms",
-      price: 49.99,
-      imageUrl:"/images/Jeans.jpg"
-    },
-    {
-      title: "Oversized Hoodie",
-      category: "Tops",
-      price: 39.99,
-      imageUrl:"/images/Jacket.jpg"
-    },
-    {
-      title: "Black Slip Dress",
-      category: "Dresses",
-      price: 59.99,
-      imageUrl:"/images/Dress.jpg"
-    },
-    {
-      title: "Denim Jacket",
-      category: "Outerwear",
-      price: 69.99,
-      imageUrl:"/images/Kids.jpg"
-    },
-    {
-      title: "Chunky Sneakers",
-      category: "Footwear",
-      price: 89.99,
-    imageUrl:"/images/shoes.jpg"
-    },
-    {
-      title: "Beige Wide-Leg Trousers",
-      category: "Bottoms",
-      price: 44.99,
-      imageUrl:"/images/Man.jpg"
-    },
-    {
-      title: "Ribbed Crop Top",
-      category: "Tops",
-      price: 24.99,
-      imageUrl:"/images/Skirt.jpg"
-    },
-  ];
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { collection, getDocs, limit, query } from "firebase/firestore";
+import { DB as db } from "@/lib/firebase";
+
+interface ProductColor {
+  color: string;
+  stock: number;
+}
+
+interface Product {
+  id: string;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  targetAudience: string;
+  imageUrl: string;
+  colors: ProductColor[];
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export default function ProductList() {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const q = query(collection(db, "products"), limit(8));
+        const querySnapshot = await getDocs(q);
+
+        const fetchedProducts = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Product[];
+
+        setProducts(fetchedProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <div className="w-full flex flex-col items-center">
       <span className="font-semibold mt-5 text-lg md:text-xl">Products</span>
       <div className="w-[calc(100%-150px)] max-md:w-[calc(100%-70px)] grid grid-cols-4 gap-16 max-md:grid-cols-2 max-md:gap-4 mt-5">
-        {products.map((product, index) => (
-          <div key={index} className="flex flex-col items-center">
+        {products.map((product) => (
+          <Link
+            key={product.id}
+            href={`/product/${product.id}`}
+            className="flex flex-col items-center p-2"
+          >
             <Image
               width={500}
               height={500}
-              className="w-full h-96 max-md:h-72 object-cover "
-              alt={`${product.imageUrl} image`}
+              className="w-full h-96 max-md:h-72 object-cover rounded-md"
+              alt={`${product.title} image`}
               src={product.imageUrl}
             />
             <span className="mt-2 w-full text-sm md:text-base leading-tight font-medium">
               {product.title}
             </span>
-            <span className="w-full text-sm  md:text-base leading-tight">
+            <span className="w-full text-sm md:text-base leading-tight">
               {product.category}
             </span>
-            <span className="w-full text-sm md:text-base font-light  leading-tight">
+            <span className="w-full text-sm md:text-base font-light leading-tight">
               ${product.price.toFixed(2)}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

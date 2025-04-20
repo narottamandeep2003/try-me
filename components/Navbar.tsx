@@ -22,15 +22,15 @@ type UserProfile = {
   photoURL: string | null;
   role: string;
 };
-
+const defaultUser: UserProfile = {
+  uid: "",
+  displayName: "",
+  email: "",
+  photoURL: "",
+  role: "user",
+};
 export default function Navbar() {
-  const defaultUser: UserProfile = {
-    uid: "",
-    displayName: "",
-    email: "",
-    photoURL: "",
-    role: "user",
-  };
+  
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<UserProfile>(defaultUser);
 
@@ -133,9 +133,9 @@ export default function Navbar() {
         {/* Desktop Links */}
         <ul className="hidden md:flex gap-6">
           <li className="cursor-pointer hover:font-semibold"> <Link href="/">Home</Link></li>
-          <li className="cursor-pointer hover:font-semibold">Product</li>
-          <li className="cursor-pointer hover:font-semibold">Category</li>
+          <li className="cursor-pointer hover:font-semibold"> <Link href="/products">Products</Link></li>
           <li className="cursor-pointer hover:font-semibold">Contact</li>
+          <li className="cursor-pointer hover:font-semibold">About</li>
           {user.role === "admin" ? (
             <>
               <li className="cursor-pointer hover:font-semibold">
@@ -190,7 +190,6 @@ export default function Navbar() {
         <div className="absolute top-[60px] bg-white left-0 w-full h-screen z-[40] flex flex-col items-start pt-8 pl-8 space-y-6 text-sm border-t border-gray-400">
           {[
             "Home",
-            "Product",
             "Category",
             "Contact",
             "Cart (0)",
@@ -205,6 +204,14 @@ export default function Navbar() {
               
             </span>
           ))}
+           <span
+              key="products"
+              className="cursor-pointer hover:font-semibold"
+              onClick={() => setMenuOpen(false)}
+            >
+              <Link href="/products">Products</Link>
+              
+            </span>
           {user.role === "admin" ? (
             <>
               <span

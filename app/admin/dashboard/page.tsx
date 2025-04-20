@@ -21,7 +21,10 @@ export default function SomeAdminPage() {
   return (
     <div className="mt-20">
       <h1>Admin Page</h1>
-      <Link href={"/"}>home</Link>
+      <span><Link href={"/"}>home</Link></span><br />
+      <span><Link href={"/admin/create-category"}>create category</Link></span>
+      <br />
+      <span><Link href={"/admin/create-product"}>create Product</Link></span>
       {/* Admin-specific content */}
     </div>
   );
