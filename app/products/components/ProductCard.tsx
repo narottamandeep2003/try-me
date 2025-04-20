@@ -26,11 +26,11 @@ export default function ProductCard({ product }: { product: Product }) {
         alt={product.title}
         width={500}
         height={500}
-        className="w-full h-64 object-cover rounded-md"
+        className="w-full h-96 max-md:h-72 object-cover rounded-md"
       />
-      <h3 className="mt-2 font-semibold">{product.title}</h3>
-      <p className="text-sm text-gray-600">{product.category}</p>
-      <p className="text-base font-bold mt-1">${product.price.toFixed(2)}</p>
+      <h3 className="mt-2 w-full text-sm md:text-base leading-tight font-medium">{product.title}</h3>
+      <p className="w-full text-sm md:text-base leading-tight">{product.category}</p>
+      <p className="w-full text-sm md:text-base font-light leading-tight">${product.price.toFixed(2)}</p>
     </Link>
   );
 }
