@@ -8,6 +8,7 @@ import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { auth, DB, provider } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
+import { useCart } from "@/app/context/CartContext";
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
@@ -30,7 +31,11 @@ const defaultUser: UserProfile = {
   role: "user",
 };
 export default function Navbar() {
-  
+  const { cart } = useCart();
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    setTotal(cart.length);
+  }, [cart]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<UserProfile>(defaultUser);
 
@@ -81,7 +86,7 @@ export default function Navbar() {
           displayName: user.displayName,
           email: user.email,
           photoURL: user.photoURL,
-          token:user.getIdToken
+          token: user.getIdToken,
         }),
       });
 
@@ -132,8 +137,14 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <ul className="hidden md:flex gap-6">
-          <li className="cursor-pointer hover:font-semibold"> <Link href="/">Home</Link></li>
-          <li className="cursor-pointer hover:font-semibold"> <Link href="/products">Products</Link></li>
+          <li className="cursor-pointer hover:font-semibold">
+            {" "}
+            <Link href="/">Home</Link>
+          </li>
+          <li className="cursor-pointer hover:font-semibold">
+            {" "}
+            <Link href="/products">Products</Link>
+          </li>
           <li className="cursor-pointer hover:font-semibold">Contact</li>
           <li className="cursor-pointer hover:font-semibold">About</li>
           {user.role === "admin" ? (
@@ -152,7 +163,9 @@ export default function Navbar() {
 
         {/* Right Side */}
         <div className="flex items-center gap-4 pr-2">
-          <span className="cursor-pointer hidden md:inline">Cart (0)</span>
+          <span className="cursor-pointer hidden md:inline">
+            <Link href="/cart">Cart ({total})</Link>
+          </span>
           {user.email !== "" ? (
             <>
               <span
@@ -161,10 +174,12 @@ export default function Navbar() {
               >
                 Logout
               </span>
-              <FaCircleUser
-                size={25}
-                className="cursor-pointer hidden md:inline"
-              />
+              <Link href="/profile">
+                <FaCircleUser
+                  size={25}
+                  className="cursor-pointer hidden md:inline"
+                />
+              </Link>
             </>
           ) : (
             <span
@@ -189,53 +204,60 @@ export default function Navbar() {
       {menuOpen && (
         <div className="absolute top-[60px] bg-white left-0 w-full h-screen z-[40] flex flex-col items-start pt-8 pl-8 space-y-6 text-sm border-t border-gray-400">
           {[
-            "Home",
-            "Category",
-            "Contact",
-            "Cart (0)",
-            "Profile",
-          ].map((item) => (
+            ["Home", "/"],
+            ["Contact", "/"],
+            ["Profile", "/profile"],
+          ].map(([label, path]) => (
             <span
-              key={item}
+              key={path} // Use the path as the unique key
               className="cursor-pointer hover:font-semibold"
               onClick={() => setMenuOpen(false)}
             >
-              <Link href="/">{item}</Link>
-              
+              <Link href={path}>{label}</Link>
             </span>
           ))}
-           <span
-              key="products"
-              className="cursor-pointer hover:font-semibold"
-              onClick={() => setMenuOpen(false)}
-            >
-              <Link href="/products">Products</Link>
-              
-            </span>
-          {user.role === "admin" ? (
+          <span
+            key="products"
+            className="cursor-pointer hover:font-semibold"
+            onClick={() => setMenuOpen(false)}
+          >
+            <Link href="/products">Products</Link>
+          </span>
+          <span
+            key="cart" // Use "cart" as the unique key
+            className="cursor-pointer hover:font-semibold"
+            onClick={() => setMenuOpen(false)}
+          >
+            <Link href="/cart">Cart ({total})</Link>
+          </span>
+          {user.role === "admin" && (
             <>
               <span
+                key="dashboard" // Use a unique key for the Dashboard link
                 className="cursor-pointer hover:font-semibold"
                 onClick={() => setMenuOpen(false)}
               >
                 <Link href="/admin/dashboard">Dashboard</Link>
               </span>
               <span
+                key="order-list" // Use a unique key for the Order List link
                 className="cursor-pointer hover:font-semibold"
                 onClick={() => setMenuOpen(false)}
               >
                 Order List
               </span>
               <span
+                key="manage-product" // Use a unique key for the Manage Product link
                 className="cursor-pointer hover:font-semibold"
                 onClick={() => setMenuOpen(false)}
               >
                 Manage Product
               </span>
             </>
-          ) : null}
+          )}
           {user.email !== "" ? (
             <span
+              key="logout" // Use a unique key for Logout
               className="cursor-pointer"
               onClick={() => {
                 handleLogout();
@@ -246,6 +268,7 @@ export default function Navbar() {
             </span>
           ) : (
             <span
+              key="login" // Use a unique key for Login
               className="cursor-pointer"
               onClick={() => {
                 handleGoogleSignIn();
