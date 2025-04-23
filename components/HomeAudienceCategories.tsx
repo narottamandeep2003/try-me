@@ -7,8 +7,8 @@ export default function HomeAudienceCategories() {
     title: "Audience Categories",
     categories: [
       { id: 1, title: "Kids", imageUrl: "/images/Kids.jpg" },
-      { id: 2, title: "Man", imageUrl: "/images/Man.jpg" },
-      { id: 3, title: "Woman", imageUrl: "/images/Woman.jpg" },
+      { id: 2, title: "Men", imageUrl: "/images/Man.jpg" },
+      { id: 3, title: "Women", imageUrl: "/images/Woman.jpg" },
       { id: 4, title: "Unisex", imageUrl: "/images/Unisex.jpg" },
     ],
   };

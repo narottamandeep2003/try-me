@@ -19,13 +19,12 @@ export default function SomeAdminPage() {
     try {
       setLoading(true);
 
-      // Upload to Cloudinary
-      const upload_preset=process.env.NEXT_PUBLIC_UPLOAD_PRESET!
+      const upload_preset = process.env.NEXT_PUBLIC_UPLOAD_PRESET!;
       const formData = new FormData();
       formData.append("file", image);
-      formData.append("upload_preset",upload_preset); 
+      formData.append("upload_preset", upload_preset);
 
-      const cloudName = process.env.NEXT_PUBLIC_CLOUD_NAME; 
+      const cloudName = process.env.NEXT_PUBLIC_CLOUD_NAME;
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
         {
@@ -35,7 +34,7 @@ export default function SomeAdminPage() {
       );
       const data = await res.json();
       const downloadURL = data.secure_url;
-      console.log(downloadURL,data)
+
       await addDoc(collection(db, "categories"), {
         name,
         imageUrl: downloadURL,
@@ -53,43 +52,55 @@ export default function SomeAdminPage() {
     }
   };
 
-  if (isAdmin === null) return <div className="mt-20">Loading...</div>;
+  if (isAdmin === null) return <div className="mt-20 text-center text-white">Loading...</div>;
 
   if (!isAdmin) {
     return (
-      <div className="mt-20">
-        <h1>Access Denied</h1>
-        <p>You do not have permission to access this page.</p>
+      <div className="mt-20 text-center text-white px-4">
+        <h1 className="text-xl font-semibold text-red-500">Access Denied</h1>
+        <p className="text-sm">You do not have permission to access this page.</p>
       </div>
     );
   }
 
   return (
-    <div className="mt-20">
-      <h1>Admin Page</h1>
-      <div className="max-w-md mx-auto mt-10 p-6 border rounded-xl shadow bg-white">
-        <h1 className="text-xl font-bold mb-4">Add New Category</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Category name"
-            className="w-full p-2 border rounded"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files?.[0] || null)}
-          />
+    <div className="min-h-screen bg-gray-50 text-black pt-20 px-4">
+      <div className="max-w-md mx-auto p-6 rounded-2xl border border-gray-300 shadow-lg bg-white">
+        <h1 className="text-2xl font-bold mb-6 text-center">Add New Category</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block mb-1 text-sm font-medium">Category Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Shirts, Shoes"
+              className="w-full p-3 rounded-lg bg-gray-100 border border-gray-300 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm font-medium">Upload Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files?.[0] || null)}
+              className="w-full p-2 bg-gray-100 border border-gray-300 rounded-lg file:text-white file:bg-gray-700 file:border-none"
+            />
+          </div>
+
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+            className="w-full bg-black text-white font-semibold py-2 rounded-lg hover:bg-gray-800 transition disabled:opacity-50"
             disabled={loading}
           >
             {loading ? "Uploading..." : "Add Category"}
           </button>
-          {success && <p className="text-green-600">{success}</p>}
+
+          {success && (
+            <p className="text-green-500 text-center text-sm font-medium">{success}</p>
+          )}
         </form>
       </div>
     </div>

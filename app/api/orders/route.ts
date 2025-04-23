@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
           0
         ),
         paymentMethod: "COD",
-        status: "preparing", // <-- standard starting status
+        status: "pending", // <-- standard starting status
         otp: Math.floor(100000 + Math.random() * 900000),
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });

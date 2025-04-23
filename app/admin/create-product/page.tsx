@@ -1,25 +1,16 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAdminCheck } from '@/hook/useAdminCheck';
-
-import {
-  collection,
-  addDoc,
-  getDocs,
-  serverTimestamp
-} from 'firebase/firestore';
-
+import { collection, addDoc, getDocs, serverTimestamp } from 'firebase/firestore';
 import { DB as db } from '@/lib/firebase';
 
 const audiences = ['Men', 'Women', 'Kids', 'Unisex'];
 
 export default function SomeAdminPage() {
   const isAdmin = useAdminCheck();
-
   const [categories, setCategories] = useState<string[]>([]);
-
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState<number | ''>('');
   const [description, setDescription] = useState('');
@@ -30,7 +21,6 @@ export default function SomeAdminPage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 
-  // 🟡 Load categories from Firestore
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -65,15 +55,15 @@ export default function SomeAdminPage() {
       setError('Please fill in all fields.');
       return;
     }
-  
+
     setUploading(true);
     try {
-      const upload_preset=process.env.NEXT_PUBLIC_UPLOAD_PRESET!
+      const upload_preset = process.env.NEXT_PUBLIC_UPLOAD_PRESET!;
       const formData = new FormData();
       formData.append('file', image);
-      formData.append('upload_preset', upload_preset); 
-      const cloudName = process.env.NEXT_PUBLIC_CLOUD_NAME; 
-  
+      formData.append('upload_preset', upload_preset);
+      const cloudName = process.env.NEXT_PUBLIC_CLOUD_NAME;
+
       const cloudRes = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
         {
@@ -81,13 +71,12 @@ export default function SomeAdminPage() {
           body: formData
         }
       );
-  
+
       const data = await cloudRes.json();
       if (!data.secure_url) throw new Error('Image upload failed');
-  
+
       const imageUrl = data.secure_url;
-  
-      // Upload product data to Firestore
+
       await addDoc(collection(db, 'products'), {
         title,
         price: Number(price),
@@ -101,7 +90,7 @@ export default function SomeAdminPage() {
         imageUrl,
         createdAt: serverTimestamp()
       });
-  
+
       alert('Product created successfully!');
       setTitle('');
       setPrice('');
@@ -118,96 +107,116 @@ export default function SomeAdminPage() {
       setUploading(false);
     }
   };
-  
 
-  // Loading state
-  if (isAdmin === null) return <div className="mt-20">Loading...</div>;
-  if (!isAdmin)
+  if (isAdmin === null) return <div className="mt-20 text-center">Loading...</div>;
+
+  if (!isAdmin) {
     return (
       <div className="mt-20 text-center">
-        <h1 className="text-xl font-bold">Access Denied</h1>
+        <h1 className="text-xl font-bold text-red-600">Access Denied</h1>
         <p>You do not have permission to access this page.</p>
       </div>
     );
+  }
 
   return (
-    <div className="mt-20">
+    <div className="min-h-screen bg-gray-50 pt-20 px-4">
       <h1 className="text-2xl font-bold text-center mb-6">Admin - Create Product</h1>
+
       <div className="text-center mb-4">
         <Link href="/" className="text-blue-500 underline mr-4">Home</Link>
         <Link href="/admin/create-category" className="text-blue-500 underline">Create Category</Link>
       </div>
 
-      <div className="max-w-2xl mx-auto p-6 border rounded-xl shadow">
+      {/* Adjusted width for responsiveness */}
+      <div className="max-w-2xl mx-auto p-6 border rounded-xl shadow-md bg-white">
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="mb-4 block"
-        />
-
-        <input
-          type="text"
-          placeholder="Title"
-          className="input mb-4 w-full"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-        />
-
-        <input
-          type="number"
-          placeholder="Price"
-          className="input mb-4 w-full"
-          value={price}
-          onChange={e => setPrice(Number(e.target.value))}
-        />
-
-        <textarea
-          placeholder="Description"
-          className="textarea mb-4 w-full"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-        />
-
-        <select
-          value={category}
-          onChange={e => setCategory(e.target.value)}
-          className="select mb-4 w-full"
-        >
-          <option value="">Select Category</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-
-        <select
-          value={audience}
-          onChange={e => setAudience(e.target.value)}
-          className="select mb-4 w-full"
-        >
-          <option value="">Select Target Audience</option>
-          {audiences.map(aud => (
-            <option key={aud} value={aud}>{aud}</option>
-          ))}
-        </select>
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Product Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full mt-1 p-2 border rounded-md"
+          />
+        </div>
 
         <div className="mb-4">
-          <h2 className="font-semibold mb-2">Colors & Stock</h2>
+          <label className="block text-sm font-medium">Title</label>
+          <input
+            type="text"
+            placeholder="Product title"
+            className="w-full p-3 border rounded-md"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Price</label>
+          <input
+            type="number"
+            placeholder="Price"
+            className="w-full p-3 border rounded-md"
+            value={price}
+            onChange={e => setPrice(Number(e.target.value))}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Description</label>
+          <textarea
+            placeholder="Product description"
+            className="w-full p-3 border rounded-md"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Category</label>
+          <select
+            value={category}
+            onChange={e => setCategory(e.target.value)}
+            className="w-full p-3 border rounded-md"
+          >
+            <option value="">Select Category</option>
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Target Audience</label>
+          <select
+            value={audience}
+            onChange={e => setAudience(e.target.value)}
+            className="w-full p-3 border rounded-md"
+          >
+            <option value="">Select Target Audience</option>
+            {audiences.map(aud => (
+              <option key={aud} value={aud}>{aud}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold mb-2">Colors & Stock</h2>
           {colors.map((item, i) => (
             <div key={i} className="flex gap-2 mb-2">
               <input
                 type="text"
                 placeholder="Color"
-                className="input flex-1"
+                className="w-full p-3 border rounded-md"
                 value={item.color}
                 onChange={e => handleColorChange(i, 'color', e.target.value)}
               />
               <input
                 type="number"
                 placeholder="Stock"
-                className="input w-24"
+                className="w-24 p-3 border rounded-md"
                 value={item.stock}
                 onChange={e => handleColorChange(i, 'stock', e.target.value)}
               />
@@ -224,7 +233,7 @@ export default function SomeAdminPage() {
 
         <button
           onClick={handleSubmit}
-          className="bg-black text-white px-4 py-2 rounded disabled:opacity-50"
+          className="w-full bg-black text-white py-3 rounded-md mt-6 disabled:opacity-50"
           disabled={uploading}
         >
           {uploading ? 'Uploading...' : 'Create Product'}

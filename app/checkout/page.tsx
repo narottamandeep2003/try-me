@@ -9,7 +9,7 @@ import { loadStripe } from "@stripe/stripe-js";
 
 
 export default function CheckoutPage() {
-  const { cart } = useCart(); // Get cart state from CartContext
+  const { cart ,clearCart} = useCart(); // Get cart state from CartContext
   const [paymentMethod, setPaymentMethod] = useState("COD"); // Default to COD
   const [totalAmount, setTotalAmount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -88,6 +88,7 @@ export default function CheckoutPage() {
       if (response.ok) {
         if (paymentMethod === "COD") {
           alert("Your order has been placed with Cash on Delivery.");
+          clearCart()
           router.push(`/order-confirmation?order_id=${data.orderId}`); // Navigate to order confirmation page
         } else if (paymentMethod === "ONLINE") {
           // Handle online payment (Stripe)
@@ -95,6 +96,7 @@ export default function CheckoutPage() {
           const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK as string); // Load Stripe.js
           let error;
           if(stripe){
+            clearCart()
             error=await stripe.redirectToCheckout({ sessionId });
           } 
           if (error) {

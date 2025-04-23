@@ -88,7 +88,7 @@ export async function GET(req: NextRequest) {
         0
       ),
       paymentMethod: "ONLINE",
-      status: "preparing",
+      status: "pending",
       otp: Math.floor(100000 + Math.random() * 900000),
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });

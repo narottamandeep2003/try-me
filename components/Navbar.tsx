@@ -153,10 +153,6 @@ export default function Navbar() {
                 {" "}
                 <Link href="/admin/dashboard">Dashboard</Link>
               </li>
-              <li className="cursor-pointer hover:font-semibold">Order List</li>
-              <li className="cursor-pointer hover:font-semibold">
-                Manage Product
-              </li>
             </>
           ) : null}
         </ul>
@@ -209,7 +205,7 @@ export default function Navbar() {
             ["Profile", "/profile"],
           ].map(([label, path]) => (
             <span
-              key={path} // Use the path as the unique key
+              key={label} // Use the path as the unique key
               className="cursor-pointer hover:font-semibold"
               onClick={() => setMenuOpen(false)}
             >
@@ -239,20 +235,8 @@ export default function Navbar() {
               >
                 <Link href="/admin/dashboard">Dashboard</Link>
               </span>
-              <span
-                key="order-list" // Use a unique key for the Order List link
-                className="cursor-pointer hover:font-semibold"
-                onClick={() => setMenuOpen(false)}
-              >
-                Order List
-              </span>
-              <span
-                key="manage-product" // Use a unique key for the Manage Product link
-                className="cursor-pointer hover:font-semibold"
-                onClick={() => setMenuOpen(false)}
-              >
-                Manage Product
-              </span>
+    
+             
             </>
           )}
           {user.email !== "" ? (
