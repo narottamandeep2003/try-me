@@ -27,6 +27,8 @@ export default function ProductCard({ product }: { product: Product }) {
         width={500}
         height={500}
         className="w-full h-96 max-md:h-72 object-cover rounded-md"
+        priority={true}
+        
       />
       <h3 className="mt-2 w-full text-sm md:text-base leading-tight font-medium">{product.title}</h3>
       <p className="w-full text-sm md:text-base leading-tight">{product.category}</p>

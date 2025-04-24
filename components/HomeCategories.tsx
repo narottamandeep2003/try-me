@@ -19,6 +19,8 @@ export default function HomeCategories({ data }: { data: HomeCategoriesType }) {
               className="w-full h-96 max-md:h-72 object-cover"
               alt={`${label.title} Category image`}
               src={label.imageUrl}
+              quality={60}
+              priority={true}
             />
             <span className="mt-2 text-center text-sm md:text-base">{label.title}</span>
           </Link>

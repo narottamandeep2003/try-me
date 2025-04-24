@@ -7,12 +7,13 @@ import { notFound, useParams } from "next/navigation";
 import Image from "next/image";
 import { Product } from "@/types/product";
 import { useCart } from "@/app/context/CartContext"; // Import the useCart hook
+import Link from "next/link";
 
 export default function ProductPage() {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const { addToCart} = useCart(); // Use the context here
+  const { addToCart, cart } = useCart(); // Use the context here
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -74,12 +75,18 @@ export default function ProductPage() {
         />
 
         <div className="flex-1 flex flex-col gap-4 mt-10">
-          <p className="text-xl text-gray-900 font-semibold">${product.price.toFixed(2)}</p>
+          <p className="text-xl text-gray-900 font-semibold">
+            ${product.price.toFixed(2)}
+          </p>
           <p className="text-gray-700">{product.description}</p>
 
           <div className="text-sm space-y-1 mt-2">
-            <p><strong>Category:</strong> {product.category}</p>
-            <p><strong>Target Audience:</strong> {product.targetAudience}</p>
+            <p>
+              <strong>Category:</strong> {product.category}
+            </p>
+            <p>
+              <strong>Target Audience:</strong> {product.targetAudience}
+            </p>
           </div>
 
           <div className="mt-6 space-y-4">
@@ -102,13 +109,21 @@ export default function ProductPage() {
               </div>
             ))}
           </div>
-
+          {cart.length > 0 && (
+            <Link href="/cart">
+              <button className="mt-6 bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
+                Proceed to Order
+              </button>
+            </Link>
+          )}
           {product.createdAt && (
             <p className="text-xs text-gray-500 mt-6">
               Created: {product.createdAt.toLocaleDateString()} • Updated:{" "}
               {product.updatedAt?.toLocaleDateString() || "N/A"}
             </p>
           )}
+
+          
         </div>
       </div>
     </div>

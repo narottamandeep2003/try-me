@@ -63,6 +63,8 @@ export default function ProductList() {
               className="w-full h-96 max-md:h-72 object-cover rounded-md"
               alt={`${product.title} image`}
               src={product.imageUrl}
+              priority={true}
+              quality={60}
             />
             <span className="mt-2 w-full text-sm md:text-base leading-tight font-medium">
               {product.title}

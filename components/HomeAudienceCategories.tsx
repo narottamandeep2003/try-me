@@ -32,6 +32,8 @@ export default function HomeAudienceCategories() {
               className="w-full h-96 max-md:h-72 object-cover"
               alt={`${category.title} Category image`}
               src={category.imageUrl}
+              quality={60}
+              priority={true}
             />
             <span className="mt-2 text-center text-sm md:text-base">{category.title}</span>
           </Link>

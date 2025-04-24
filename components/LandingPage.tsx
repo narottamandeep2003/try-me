@@ -9,16 +9,16 @@ export default function LandingPage() {
           alt="Landing image"
           src="/images/Landing.jpg"
           fill
-          priority
-          unoptimized
+          quality={60}
+          priority={true}
         />
         <Image
           className="object-cover object-center w-[calc(100%-50px)] md:hidden"
           alt="Landing image"
           src="/images/Landing1.jpg"
           fill
-          priority
-          unoptimized
+          quality={60}
+          priority={true}
         />
       </div>
     </div>
